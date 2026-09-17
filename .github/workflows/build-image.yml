@@ -43,4 +43,4 @@ jobs:
           -v /var/run/docker.sock:/var/run/docker.sock
           aquasec/trivy:0.58.1 image
           --severity CRITICAL,HIGH --ignore-unfixed
-          ghcr.io/${{ github.repository_owner }}/codex-lb:sha-${{ github.sha }}
+          ghcr.io/${{ github.repository_owner }}/codex-lb:sha-${GITHUB_SHA::7}

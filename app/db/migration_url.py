@@ -14,5 +14,10 @@ def to_sync_database_url(database_url: str) -> str:
         parsed = parsed.set(drivername="sqlite")
     elif driver == "postgresql+asyncpg":
         parsed = parsed.set(drivername="postgresql+psycopg")
+        # asyncpg uses ``ssl`` while psycopg/libpq expects ``sslmode``.
+        # CF-managed PostgreSQL bindings commonly append ssl=require.
+        if "ssl" in parsed.query and "sslmode" not in parsed.query:
+            ssl_value = parsed.query["ssl"]
+            parsed = parsed.update_query_dict({"sslmode": ssl_value}).difference_update_query(["ssl"])
 
     return parsed.render_as_string(hide_password=False)

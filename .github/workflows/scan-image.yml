@@ -23,7 +23,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Scan image
-        run: >-
-          docker run --rm aquasec/trivy:0.58.1 image
-          --severity CRITICAL,HIGH --ignore-unfixed
-          "${{ inputs.image }}"
+        env:
+          IMAGE: ${{ inputs.image }}
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [[ "$IMAGE" =~ ^ghcr\.io/9c6j/codex-lb@sha256:[a-f0-9]{64}$ ]] || exit 1
+          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD \
+            aquasec/trivy:0.58.1 image \
+            --scanners vuln --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed \
+            "$IMAGE"

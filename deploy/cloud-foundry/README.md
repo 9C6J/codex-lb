@@ -1,8 +1,9 @@
 # SAP BTP Cloud Foundry deployment
 
-This overlay runs the upstream container on Cloud Foundry. Supply an immutable
-registry digest, route, database service name, and database URL through a vars
-file before pushing.
+This overlay runs the repository's own container image on Cloud Foundry. The
+`build-image` workflow publishes it to GHCR; supply that image's immutable
+digest, route, database service name, and database URL through a vars file
+before pushing.
 
 ## Prerequisites
 
@@ -14,7 +15,9 @@ file before pushing.
 The manifest intentionally does not use SQLite or the container filesystem for
 application data. Set `CODEX_LB_DATABASE_URL` through the PostgreSQL service
 binding or the target platform's secret integration. Store the encryption key
-the same way and do not commit either value.
+the same way and do not commit either value. The entrypoint accepts the
+base64-encoded Fernet key as `CODEX_LB_ENCRYPTION_KEY_B64`, writes it with mode
+`0600`, and keeps it identical across all instances.
 
 ## First deployment
 

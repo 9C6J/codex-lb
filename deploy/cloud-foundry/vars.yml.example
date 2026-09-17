@@ -4,3 +4,4 @@ db_service: codex-lb-db
 # Copy to vars.yml outside version control and provide values through your
 # deployment secret manager. Never commit the real file.
 database_url: postgresql+asyncpg://user:password@postgres.example/codex_lb
+encryption_key_b64: REPLACE_WITH_BASE64_FERNET_KEY

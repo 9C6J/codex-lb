@@ -11,6 +11,7 @@ applications:
     env:
       CODEX_LB_DATABASE_MIGRATE_ON_STARTUP: "false"
       CODEX_LB_DATABASE_URL: "((database_url))"
-      CODEX_LB_ENCRYPTION_KEY_FILE: /etc/codex-lb/encryption.key
+      CODEX_LB_ENCRYPTION_KEY_FILE: /var/lib/codex-lb/encryption.key
+      CODEX_LB_ENCRYPTION_KEY_B64: "((encryption_key_b64))"
     services:
       - "((db_service))"

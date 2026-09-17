@@ -1,5 +1,5 @@
-- [ ] Add and validate the CF runtime overlay.
-- [ ] Document PostgreSQL, secret, migration, and health-check requirements.
+- [x] Add and validate the CF runtime overlay.
+- [x] Document PostgreSQL, secret, migration, and health-check requirements.
 - [ ] Add IAS/XSUAA gateway configuration and integration tests.
-- [ ] Add CI build, scan, staging deploy, and upstream synchronization workflow.
+- [x] Add CI build, scan, staging deploy, and upstream synchronization workflow.
 - [ ] Verify staging streaming, WebSocket, persistence, and multi-user isolation.

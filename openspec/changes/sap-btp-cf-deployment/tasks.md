@@ -2,4 +2,5 @@
 - [x] Document PostgreSQL, secret, migration, and health-check requirements.
 - [ ] Add IAS/XSUAA gateway configuration and integration tests.
 - [x] Add CI build, scan, staging deploy, and upstream synchronization workflow.
+- [x] Separate the upstream `main` branch from the BTP deployment branch.
 - [ ] Verify staging streaming, WebSocket, persistence, and multi-user isolation.

@@ -1,6 +1,7 @@
 # SAP BTP Cloud Foundry deployment
 
-This overlay runs the repository's own container image on Cloud Foundry. The
+This overlay is maintained on the `btp/cf-deployment` branch and runs the
+repository's own container image on Cloud Foundry. The
 `build-image` workflow publishes it to GHCR; supply that image's immutable
 digest, route, database service name, and database URL through a vars file
 before pushing.

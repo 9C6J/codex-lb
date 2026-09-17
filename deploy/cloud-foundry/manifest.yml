@@ -1,0 +1,16 @@
+applications:
+  - name: codex-lb
+    docker:
+      image: "((image))"
+    command: /app/scripts/docker-entrypoint.sh
+    routes:
+      - route: "((route))"
+    health-check-type: http
+    health-check-http-endpoint: /health
+    timeout: 180
+    env:
+      CODEX_LB_DATABASE_MIGRATE_ON_STARTUP: "false"
+      CODEX_LB_DATABASE_URL: "((database_url))"
+      CODEX_LB_ENCRYPTION_KEY_FILE: /etc/codex-lb/encryption.key
+    services:
+      - "((db_service))"

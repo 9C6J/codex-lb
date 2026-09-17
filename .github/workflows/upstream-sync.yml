@@ -1,0 +1,37 @@
+name: upstream-sync
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure upstream remote
+        run: git remote add upstream https://github.com/Soju06/codex-lb.git
+      - name: Fetch upstream
+        run: git fetch --no-tags upstream main
+      - name: Open synchronization PR when upstream changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$(git rev-parse HEAD)" = "$(git rev-parse upstream/main)" ]; then
+            echo "Already synchronized"
+            exit 0
+          fi
+          branch="automation/upstream-$(git rev-parse --short upstream/main)"
+          git switch -c "$branch"
+          git merge --no-edit upstream/main
+          git push --set-upstream origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "chore: sync upstream codex-lb" \
+            --body "Updates the vendored codex-lb base to upstream/main. Review CF overlay conflicts and run staging checks before merge."

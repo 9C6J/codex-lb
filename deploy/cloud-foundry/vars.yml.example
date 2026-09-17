@@ -1,0 +1,6 @@
+image: ghcr.io/9c6j/codex-lb@sha256:REPLACE_WITH_DIGEST
+route: codex-lb.<cf-domain>
+db_service: codex-lb-db
+# Copy to vars.yml outside version control and provide values through your
+# deployment secret manager. Never commit the real file.
+database_url: postgresql+asyncpg://user:password@postgres.example/codex_lb

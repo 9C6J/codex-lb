@@ -1,0 +1,60 @@
+name: deploy-cf
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: Immutable image reference, including digest
+        required: true
+        type: string
+      route:
+        description: Public Application Router or staging route
+        required: true
+        type: string
+      db_service:
+        description: Existing PostgreSQL service instance name
+        required: true
+        default: codex-lb-db
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install CF CLI
+        uses: cloudfoundry/cli@v2
+      - name: Login to SAP BTP CF
+        env:
+          CF_API: ${{ secrets.SAP_CF_API }}
+          CF_USER: ${{ secrets.SAP_CF_USER }}
+          CF_PASSWORD: ${{ secrets.SAP_CF_PASSWORD }}
+          CF_ORG: ${{ secrets.SAP_CF_ORG }}
+          CF_SPACE: ${{ secrets.SAP_CF_SPACE }}
+        run: |
+          cf api "$CF_API"
+          cf auth "$CF_USER" "$CF_PASSWORD"
+          cf target -o "$CF_ORG" -s "$CF_SPACE"
+      - name: Deploy immutable image
+        env:
+          IMAGE: ${{ inputs.image }}
+          ROUTE: ${{ inputs.route }}
+          DB_SERVICE: ${{ inputs.db_service }}
+          DATABASE_URL: ${{ secrets.CODEX_LB_DATABASE_URL }}
+        run: |
+          cat > deploy/cloud-foundry/vars.yml <<EOF
+          image: ${IMAGE}
+          route: ${ROUTE}
+          db_service: ${DB_SERVICE}
+          database_url: ${DATABASE_URL}
+          EOF
+          cf push -f deploy/cloud-foundry/manifest.yml --vars-file deploy/cloud-foundry/vars.yml
+      - name: Smoke test
+        env:
+          CODEX_LB_URL: https://${{ inputs.route }}
+          CODEX_LB_API_KEY: ${{ secrets.CODEX_LB_API_KEY }}
+        run: sh deploy/cloud-foundry/smoke-test.sh

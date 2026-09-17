@@ -71,3 +71,5 @@ SUMMARY.md
 DECISIONS.md
 .superpowers/
 .agents/worktrees/
+.cf-vars.yml
+deploy/cloud-foundry/vars.yml
